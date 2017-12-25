@@ -1,0 +1,12 @@
+hash: 5cd4402a8f06bae962c45d27a723f613cb388c7c885303122d85577114e1b747
+updated: 2017-12-25T17:36:22.106526+08:00
+imports:
+- name: github.com/gorilla/websocket
+  version: ea4d1f681babbce9545c9c5f3d5194a789c89f5b
+- name: github.com/lucasb-eyer/go-colorful
+  version: 231272389856c976b7500c4fffcc52ddf06ff4eb
+- name: github.com/satori/go.uuid
+  version: 879c5887cd475cd7864858769793b2ceb0d44feb
+- name: github.com/tidwall/gjson
+  version: e62d62a3e1e9f324346170bbc04333341f803dfb
+testImports: []
