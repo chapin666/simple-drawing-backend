@@ -7,6 +7,7 @@ This code shows how to build a simple drawing app using Go for the back-end. All
 Buld and run the server.
 
 $ go build -o server && ./server
+
 Open client/index.html in your browser.
 
 ![效果截图](snap.gif)
