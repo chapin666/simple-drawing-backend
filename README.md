@@ -1,6 +1,6 @@
 # simple-drawing-backend
-This code shows how to build a simple drawing app using Go for the back-end. All communication will be established with WebSockets, so users will be able to see each others' drawings in real-time.
 
+此项目是使用 GO 语言编写的简单白板（涂鸦）服务端功能。 所使用的通信协议是 WebSocket，因此所有的用户都将实时看到彼此的绘制路径。其次，用户还可以为画笔设置颜色等。
 
 ### Running
 
