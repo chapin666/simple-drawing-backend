@@ -7,6 +7,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
+// Client struct.
 type Client struct {
 	id       string
 	hub      *Hub
@@ -26,6 +27,7 @@ func newClient(hub *Hub, socket *websocket.Conn) *Client {
 	}
 }
 
+// read method.
 func (client *Client) read() {
 	defer func() {
 		client.hub.unregister <- client
@@ -40,6 +42,7 @@ func (client *Client) read() {
 	}
 }
 
+// write method.
 func (client *Client) write() {
 	for {
 		select {
@@ -53,11 +56,13 @@ func (client *Client) write() {
 	}
 }
 
+// run method
 func (client Client) run() {
 	go client.read()
 	go client.write()
 }
 
+// close method
 func (client Client) close() {
 	client.socket.Close()
 	close(client.outbound)

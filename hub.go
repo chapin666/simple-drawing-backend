@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"simple-drawing-backend/message"
+
+	"github.com/tidwall/gjson"
 
 	"github.com/gorilla/websocket"
 )
@@ -74,15 +77,59 @@ func (hub *Hub) broadcast(message interface{}, ignore *Client) {
 
 // onConnect method of Hub.
 func (hub *Hub) onConnect(client *Client) {
+	log.Println("client connected: ", client.socket.RemoteAddr())
 
+	// Make list of all users
+	users := []message.User{}
+	for _, c := range hub.clients {
+		users = append(users, message.User{ID: c.id, Color: c.color})
+	}
+
+	// Send exists clients to client
+	hub.send(message.NewConnected(client.color, users), client)
+	// Notify user joined
+	hub.broadcast(message.NewUserJoined(client.id, client.color), client)
 }
 
 // onDisconnect method of Hub.
 func (hub *Hub) onDisconnect(client *Client) {
+	log.Println("client disconnected: ", client.socket.RemoteAddr())
+	client.close()
 
+	// Find index of client
+	i := -1
+	for j, c := range hub.clients {
+		if c.id == client.id {
+			i = j
+			break
+		}
+	}
+
+	// Delete client from list
+	copy(hub.clients[i:], hub.clients[i+1:])
+	hub.clients[len(hub.clients)-1] = nil
+	hub.clients = hub.clients[:len(hub.clients)-1]
+
+	// Notify user left
+	hub.broadcast(message.NewUserLeft(client.id), nil)
 }
 
 // onMessage method of Hub.
 func (hub *Hub) onMessage(data []byte, client *Client) {
-
+	kind := gjson.GetBytes(data, "kind").Int()
+	if kind == message.KindStroke {
+		var msg message.Stroke
+		if json.Unmarshal(data, &msg) != nil {
+			return
+		}
+		msg.UserID = client.id
+		hub.broadcast(msg, client)
+	} else if kind == message.KindClear {
+		var msg message.Clear
+		if json.Unmarshal(data, &msg) != nil {
+			return
+		}
+		msg.UserID = client.id
+		hub.broadcast(msg, client)
+	}
 }
